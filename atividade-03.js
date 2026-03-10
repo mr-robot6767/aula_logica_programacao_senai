@@ -192,14 +192,37 @@ console.log("_______________________________");
 // g) Exiba o nome e a 3ª nota do 1º aluno.
 
 // → Seu código aqui:
+// const aluno1 = {
+//     nome: Keyboard.question('Digite o nome do aluno: '),
+//     notas: [
+//       Keyboard.questionInt('Digite a nota 1: '),
+//       Keyboard.questionInt('Digite a nota 2: '),
+//       Keyboard.questionInt('Digite a nota 3: ')
+//     ]
+//   };
 
-const nomeUsuario1 = Keyboard.question('Digite o nome do aluno: ');
-const nota1 = (Keyboard.question('Nota 1: '));
-const not2 = (Keyboard.question('Nota 2: '));
-const nota3 = (Keyboard.question('Nota 3: '));
-const aluno1 = { nome: nome1, notas: [nota1, nota2, nota3] };
+//   const aluno2 = {
+//     nome: Keyboard.question('Digite o nome do aluno: '),
+//     notas: [
+//       Keyboard.questionInt('Digite a nota 1: '),
+//       Keyboard.questionInt('Digite a nota 2: '),
+//       Keyboard.questionInt('Digite a nota 3: ')
+//     ]
+//   };
 
-
+//   const aluno3 = {
+//     nome: Keyboard.question('Digite o nome do aluno: '),
+//     notas: [
+//       Keyboard.questionInt('Digite a nota 1: '),
+//       Keyboard.questionInt('Digite a nota 2: '),
+//       Keyboard.questionInt('Digite a nota 3: ')
+//     ]
+//   };
+// const turma =[aluno1, aluno2, aluno3]
+// console.table(turma)
+// console.log(`Aluno: ${turma[1].nome}, Nota: ${turma[1].notas[0]}`);
+// console.log(`Aluno: ${turma[2].nome}, Nota: ${turma[2].notas[1]}`);
+// console.log(`Aluno: ${turma[2].nome}, Nota: ${turma[2].notas[1]}`);
 
 console.log("_______________________________");
 
@@ -220,7 +243,23 @@ console.log("_______________________________");
 //    "Produto: <nome> | Categoria: <categoria> | Estoque: <quantidade> un".
 
 // → Seu código aqui:
+// const usuario = {
+//     nome: Keyboard.question('Digite o nome do produto: '),
+//     categoria: Keyboard.question('Digite sua categoria: '),
+//     preco: Keyboard.questionFloat('Digite seu preco: '),
+//     estoque: Keyboard.question('quantidade em estoque: ')
+// }
+//     const venda = Keyboard.keyInYN('está disponível para venda? ');
 
+//     const produto = {
+//         nome: usuario.nome,       
+//         categoria: usuario.categoria,
+//         preco: usuario.preco,     
+//         estoque: usuario.estoque,
+//         disponivel: venda     
+// }
+//     console.table(produto);
+//     console.log(`Produto: ${produto.nome} | Categoria: ${produto.categoria} | Estoque: ${produto.estoque} un`);
 
 console.log("_______________________________");
 
@@ -236,3 +275,22 @@ console.log("_______________________________");
 // c) Exiba a lista com console.table().
 // d) Exiba somente o nome e preço do 2 medicamento.
 // e) Exiba somente o nome e se está em estoque o 1 medicamento.
+const estoqueFarmacia = []
+
+const med1 = {
+        nome: Keyboard.question('Digite o nome do 1 medicamento: '),
+        preco: Keyboard.questionFloat('Digite o preco do medicamento: '),
+        emEstoque: Keyboard.keyInYN('esta disponivel para venda? ')
+}
+const med2 = {
+    nome: Keyboard.question('Digite o nome 2 do medicamento: '),
+    preco: Keyboard.questionFloat('Digite o preco do medicamento: '),
+    emEstoque: Keyboard.keyInYN('esta disponivel para venda? ')
+}
+estoqueFarmacia.push(med1);
+estoqueFarmacia.push(med2);
+
+console.table(estoqueFarmacia);
+
+console.log(`Medicamento 2: ${estoqueFarmacia[1].nome} | Preço: R$ ${estoqueFarmacia[1].preco}`);
+console.log(`Medicamento 1: ${estoqueFarmacia[0].nome} | Em estoque: ${estoqueFarmacia[0].emEstoque}`);
