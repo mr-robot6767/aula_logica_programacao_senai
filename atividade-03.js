@@ -275,22 +275,22 @@ console.log("_______________________________");
 // c) Exiba a lista com console.table().
 // d) Exiba somente o nome e preço do 2 medicamento.
 // e) Exiba somente o nome e se está em estoque o 1 medicamento.
-const estoqueFarmacia = []
+// const estoqueFarmacia = []
 
-const med1 = {
-        nome: Keyboard.question('Digite o nome do 1 medicamento: '),
-        preco: Keyboard.questionFloat('Digite o preco do medicamento: '),
-        emEstoque: Keyboard.keyInYN('esta disponivel para venda? ')
-}
-const med2 = {
-    nome: Keyboard.question('Digite o nome 2 do medicamento: '),
-    preco: Keyboard.questionFloat('Digite o preco do medicamento: '),
-    emEstoque: Keyboard.keyInYN('esta disponivel para venda? ')
-}
-estoqueFarmacia.push(med1);
-estoqueFarmacia.push(med2);
+// const med1 = {
+//         nome: Keyboard.question('Digite o nome do 1 medicamento: '),
+//         preco: Keyboard.questionFloat('Digite o preco do medicamento: '),
+//         emEstoque: Keyboard.keyInYN('esta disponivel para venda? ')
+// }
+// const med2 = {
+//     nome: Keyboard.question('Digite o nome 2 do medicamento: '),
+//     preco: Keyboard.questionFloat('Digite o preco do medicamento: '),
+//     emEstoque: Keyboard.keyInYN('esta disponivel para venda? ')
+// }
+// estoqueFarmacia.push(med1);
+// estoqueFarmacia.push(med2);
 
-console.table(estoqueFarmacia);
+// console.table(estoqueFarmacia);
 
-console.log(`Medicamento 2: ${estoqueFarmacia[1].nome} | Preço: R$ ${estoqueFarmacia[1].preco}`);
-console.log(`Medicamento 1: ${estoqueFarmacia[0].nome} | Em estoque: ${estoqueFarmacia[0].emEstoque}`);
+// console.log(`Medicamento 2: ${estoqueFarmacia[1].nome} | Preço: R$ ${estoqueFarmacia[1].preco}`);
+// console.log(`Medicamento 1: ${estoqueFarmacia[0].nome} | Em estoque: ${estoqueFarmacia[0].emEstoque}`);

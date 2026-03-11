@@ -49,7 +49,7 @@ let gasparzinho
 let nada = null
 console.log(`${texto},amigo tudo bem, o tipo é ${typeof texto}`)
 console.log(`eu tenho ${numero} reais, o tipo é ${typeof numero}`)
-console.log(`eu tenho medo do ${gasparzinho},o tipo é ${typeof gasparzinho} `)
+console.log(` ${gasparzinho},o tipo é ${typeof gasparzinho} `)
 console.log(`${nada}, o tipo é ${typeof nada}`)
 
 console.log("_______________________________");
