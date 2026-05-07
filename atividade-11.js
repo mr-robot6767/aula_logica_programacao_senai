@@ -64,17 +64,26 @@ const notasAlunoB = [8, 4.5, 6.3, 9];
 // d) Teste com dois arrays:
 
 // → Seu código aqui:
-function verificarNotas(notas) {
-    for (let i = 0; i < notas.length; i++) {
-        if (notas[i] < 5) {
-            return `Reprovado na nota ${notas[i]} (índice ${i})`;
-        }
+let aprovadoA = true;
+for (let i = 0; i < notasAlunoA.length; i++) {
+    if (notasAlunoA[i] < 5) {
+        console.log(`Aluno A: Reprovado na nota ${notasAlunoA[i]} (índice ${i})`);
+        aprovadoA = false;
+        break;
     }
-    return "Aprovado!";
 }
+if (aprovadoA) console.log("Aluno A: Aprovado");
 
-console.log(verificarNotas(notasAlunoA));
-console.log(verificarNotas(notasAlunoB));
+let aprovadoB = true;
+for (let i = 0; i < notasAlunoB.length; i++) {
+    if (notasAlunoB[i] < 5) { 
+        console.log(`Aluno B: Reprovado na nota ${notasAlunoB[i]} (índice ${i})`);
+        aprovadoB = false;
+        break;
+    }
+}
+if (aprovadoB) console.log("Aluno B: Aprovado");
+
 console.log("_______________________________");
 
 
@@ -90,23 +99,25 @@ console.log("_______________________________");
 //    "Você precisou de <tentativas> tentativa(s)."
 
 // → Seu código aqui:
+
 let palavraSecreta = "javascript";
 let tentativas = 0;
 let chute = "";
 
 while (true) {
- tentativas++;
- chute = "javascript";  
+  chute = Keyboard.question("tente adivinhar a palavra: ");
+  tentativas++;
 
-    if (chute === palavraSecreta) {
-        console.log("Parabéns! Você acertou!");
-        break; 
-    } else {
-        console.log("Errou! Tente novamente.");
-    }
+  if (chute === palavraSecreta) {
+    console.log("Parabéns! Você acertou!");
+    break;
+  } else {
+    console.log("Errou! Tente novamente.");
+  }
 }
 
 console.log(`Você precisou de ${tentativas} tentativa(s).`);
+
 console.log("_______________________________");
 
 
@@ -124,24 +135,24 @@ console.log("_______________________________");
 // → Seu código aqui:
 let soma = 0;
 let quantidadePositivos = 0;
-let numero;
 
 while (true) {
-    numero = 10; 
+    let numero = Keyboard.questionInt("digite um numero para sair: ");
 
-    if (numero === 0) {
-        break; 
-    } if (numero < 0) {
+    if (numero === 0) 
+        break;
+
+     if (numero < 0){ 
         console.log("Ignorando número negativo.");
-        continue; 
-        }
+        continue
+}
 
-soma += numero;
+soma = numero + soma;
 quantidadePositivos++;
 }
 
-console.log(`Soma dos positivos: ${soma}`);
-console.log(`Quantidade de positivos: ${quantidadePositivos}`);
+console.log(`Soma dos positivos:`+ soma);
+console.log(`Quantidade de positivos: }`+ quantidadePositivos );
 
 console.log("_______________________________");
 
@@ -162,14 +173,16 @@ console.log("_______________________________");
 //    Se não houver, retorna null.
 
 // → Seu código aqui:
-let resultados2 = [] 
-for (let i = 0; i < alunos.length; i++){
+let alunoReprovado = null
+
+for(let i = 0;i < alunos.length; i++){
     if(alunos[i].nota < 5){
-        resultados2.push(alunos[i].nome);
+        alunoReprovado = alunos[i];
+        break
     }
 }
-console.log(resultados2)
 
+console.log(alunoReprovado)
 console.log("_______________________________");
 
 
@@ -187,8 +200,20 @@ console.log("_______________________________");
 //    "Ticket médio: R$ <média>"
 
 // → Seu código aqui:
+let totalVendas = 0;
+let qtdVendas   = 0;
 
+for(let i = 0; i < vendas.length; i++) {
+    if(vendas[i] === -1) continue;
+    
+    totalVendas += vendas[i];
+    qtdVendas++;
+}
 
+const ticketMedio = totalVendas / qtdVendas;
+console.log(`Vendas válidas: ${qtdVendas}`);
+console.log(`Total arrecadado: R$ ${totalVendas.toFixed(2)}`);
+console.log(`Ticket médio: R$ ${ticketMedio.toFixed(2)}`);
 console.log("_______________________________");
 
 
