@@ -1,291 +1,150 @@
-//Criar Banco;
-//Segurança do Banco;
-//menu inicial 
-//Taxa:
-//Saque:
-//Investimento:
-//C.C:
-//Tranferencia: Pix, Ted, Doc;
-//LCP.:
-//Emprestimo: add Historico, Atualiza Conta no caso o valor;
-//Renda fixa, Renda variavel;
-//extrato: o que, quanto, ano/mes/dia/hora/minuto/segundo
-//sistema de ajuda;
-//cashback;
-//Recarga de Celular;
-//Seguraça de validação;
-
-//Ter Notificação;
-//Abrir Caixinha;
-//Notificação: Ex: Cartao Vencido, Valor en Extrato, Novo Limite, Deposito, Saque;
-
-//Cadastro: Com Senha;
-//historico
-//limite
-//tipo
-//investimento
-//info pessoal
-//saldo
-//bonus
-//logado = boolean
-//Excluir Cadastro;
-
 const Keyboard = require("readline-sync");
 
-let contas = []; 
+let contas = [];
 
 function criarCadastroBase() {
-    return {
-        nomeCompleto: null,
-        senha: null,
-        telefone: null,
-        cpf: null,
-        cnpj: null,
-        saldo: 0, 
-        extrato: [], 
-        enderecoCompleto: { 
-            cep: null,
-            estado: null,
-            cidade: null,
-            bairro: null,
-            rua: null,
-            numero: null
-        }
-    };
+  return {
+    nomeCompleto: null,
+    senha: null,
+    cpf: null,
+    saldo: 0,
+    extrato: [],
+    emprestimos: []
+  };
 }
 
-// Controla o fluxo de cadastro de novos clientes
-function conta() {
-    const pergunta = Keyboard.keyInYN('Deseja criar uma conta? (Pressione N se ja tiver login): ');
-
-    if (pergunta === true) {
-        const novoUsuario = criarCadastroBase();
-        const nomeDigitado = Keyboard.question("Digite seu nome completo: ");
-        let nomeJaExiste = false; 
-
-        // Validação: impede o cadastro de nomes duplicados (ignorando maiúsculas/minúsculas)
-        for (let usuario of contas) {
-            if (usuario.nomeCompleto.toLowerCase() === nomeDigitado.toLowerCase()) {
-                nomeJaExiste = true; 
-                break; 
-            }
-        }
-
-        if (nomeJaExiste) {
-            console.log("\n[ERRO] Esse nome ja esta cadastrado! Encaminhando para o login...");
-            login(); 
-            return;  
-        }
-
-        // Preenchimento dos dados do novo usuário
-        novoUsuario.nomeCompleto = nomeDigitado;
-        
-        // MÁSCARA ADICIONADA AQUI: esconde a senha ao digitar
-        novoUsuario.senha = Keyboard.question("Crie uma senha: ", { hideEchoBack: true, mask: '*' }); 
-        
-        novoUsuario.telefone = Keyboard.question("Digite seu telefone: ");
-        novoUsuario.cpf = Keyboard.question("Digite seu CPF: "); 
-        
-        console.log("\n--- Agora vamos preencher o endereco ---");
-        novoUsuario.enderecoCompleto.cep = Keyboard.question("Digite o CEP: ");
-        novoUsuario.enderecoCompleto.cidade = Keyboard.question("Digite a cidade: ");
-        novoUsuario.enderecoCompleto.numero = Keyboard.question("Digite o numero da casa: ");
-
-        // Salva o novo usuário no array global de contas
-        contas.push(novoUsuario);
-        
-        console.log("\nConta criada com sucesso!\n");
-        login();
-    } else {
-        console.log("Encaminhando para a tela de login...");
-        login();
-    }
+function registrarTransacao(conta, tipo, valor, detalhes) {
+  conta.extrato.push({ tipo: tipo, valor: valor, detalhes: detalhes, data: new Date().toLocaleString("pt-BR") });
 }
 
-// Realiza a autenticação do usuário
+function lerValorSimples(mensagem) {
+  let valor = 0;
+  do {
+    valor = Number(Keyboard.question(mensagem).replace(",", "."));
+    if (!(valor > 0)) console.log("[ERRO] Digite um valor maior que zero.");
+  } while (!(valor > 0));
+  return valor;
+}
+
+function criarConta() {
+  let novaConta = criarCadastroBase();
+  let nome = Keyboard.question("Nome completo: ");
+  let cpf = Keyboard.question("CPF: ");
+  for (let i = 0; i < contas.length; i++) {
+    if (contas[i].nomeCompleto.toLowerCase() === nome.toLowerCase()) { console.log("[ERRO] Nome já cadastrado."); return; }
+    if (contas[i].cpf === cpf) { console.log("[ERRO] CPF já cadastrado."); return; }
+  }
+  novaConta.nomeCompleto = nome;
+  novaConta.cpf = cpf;
+  novaConta.senha = Keyboard.question("Senha: ", { hideEchoBack: true, mask: "*" });
+  contas.push(novaConta);
+  console.log("[SUCESSO] Conta criada.");
+  if (Keyboard.keyInYN("Fazer login agora? ")) login();
+}
+
 function login() {
-    console.log("\n--- TELA DE LOGIN ---");
-    const nomeLogin = Keyboard.question("Digite seu nome de usuario: ");
-    
-    // MÁSCARA ADICIONADA AQUI TAMBÉM: para o login seguro
-    const senhaLogin = Keyboard.question("Digite sua senha: ", { hideEchoBack: true, mask: '*' }); 
-    
-    let usuarioLogado = null; 
+  if (contas.length === 0) { console.log("Nenhuma conta. Criando uma."); criarConta(); return; }
+  let nome = Keyboard.question("Usuário: ");
+  let senha = Keyboard.question("Senha: ", { hideEchoBack: true, mask: "*" });
+  let usuarioLogado = null;
+  for (let i = 0; i < contas.length; i++) {
+    if (contas[i].nomeCompleto.toLowerCase() === nome.toLowerCase() && contas[i].senha === senha) { usuarioLogado = contas[i]; break; }
+  }
+  if (!usuarioLogado) { console.log("[ERRO] Usuário ou senha inválidos."); if (Keyboard.keyInYN("Tentar novamente? ")) login(); return; }
+  menuPrincipal(usuarioLogado);
+}
 
-    // Busca no sistema uma conta que coincida com o nome e a senha digitados
-    for (let usuario of contas) {
-        if (usuario.nomeCompleto.toLowerCase() === nomeLogin.toLowerCase() && usuario.senha === senhaLogin) {
-            usuarioLogado = usuario; 
-            break; 
-        }
-    }
+function depositar(conta) {
+  let valor = lerValorSimples("Valor para depositar: R$ ");
+  conta.saldo += valor;
+  registrarTransacao(conta, "Depósito", valor, "");
+  console.log("[SUCESSO] Depósito: R$ " + valor.toFixed(2));
+}
 
-    if (usuarioLogado !== null) {
-        console.log(`\nLogin realizado com sucesso! Bem-vindo, ${usuarioLogado.nomeCompleto}.`);
-        menuPrincipal(usuarioLogado); // Direciona para o menu do banco passando o usuário logado
-    } else {
-        console.log("\n[ERRO] Nome de usuario ou senha incorretos!");
-        const tentarNovamente = Keyboard.keyInYN('Deseja tentar logar novamente? ');
-        if (tentarNovamente) {
-            login();
+function sacar(conta) {
+  let valor = lerValorSimples("Valor para sacar: R$ ");
+  if (valor > conta.saldo) { console.log("[ERRO] Saldo insuficiente. Saldo: R$ " + conta.saldo.toFixed(2)); return; }
+  conta.saldo -= valor;
+  registrarTransacao(conta, "Saque", valor, "");
+  console.log("[SUCESSO] Saque: R$ " + valor.toFixed(2));
+}
+
+function solicitarEmprestimo(conta) {
+  let valorSolicitado = lerValorSimples("Valor do empréstimo: R$ ");
+  let juros = 0.05;
+  let total = valorSolicitado * (1 + juros);
+  let parcelas = 10;
+  let valorParcela = total / parcelas;
+  conta.saldo += valorSolicitado;
+  conta.emprestimos.push({ valorSolicitado: valorSolicitado, totalPagar: total, saldoDevedor: total, parcelasRestantes: parcelas, valorParcela: valorParcela, quitado: false });
+  registrarTransacao(conta, "Empréstimo", valorSolicitado, "Total: R$ " + total.toFixed(2));
+  console.log("[SUCESSO] Empréstimo aprovado: R$ " + valorSolicitado.toFixed(2));
+}
+
+function descontarParcelaEmprestimo(conta) {
+  for (let i = 0; i < conta.emprestimos.length; i++) {
+    let emprestimo = conta.emprestimos[i];
+    if (!emprestimo.quitado && emprestimo.parcelasRestantes > 0) {
+      if (conta.saldo >= emprestimo.valorParcela) {
+        conta.saldo -= emprestimo.valorParcela;
+        emprestimo.saldoDevedor -= emprestimo.valorParcela;
+        emprestimo.parcelasRestantes--;
+        if (emprestimo.saldoDevedor <= 0 || emprestimo.parcelasRestantes === 0) {
+          emprestimo.saldoDevedor = 0; emprestimo.parcelasRestantes = 0; emprestimo.quitado = true;
+          registrarTransacao(conta, "Parcela", emprestimo.valorParcela, "Quitado");
         } else {
-            console.log("Programa encerrado.");
+          registrarTransacao(conta, "Parcela", emprestimo.valorParcela, "Restam: " + emprestimo.parcelasRestantes);
         }
+      } else {
+        console.log("[AVISO] Empréstimo aberto, saldo insuficiente para parcela.");
+      }
+      return;
     }
+  }
 }
 
-// Adiciona saldo ao usuário logado e registra o evento no extrato
-function depositar(usuario) {
-    console.log("\n--- ÁREA DE DEPÓSITO ---");
-    let valor = Keyboard.questionFloat("Digite o valor que deseja depositar: R$ ");
-
-    if (valor <= 0) {
-        console.log("\n[ERRO] Valor de depósito inválido!");
-        return;
-    }
-
-    usuario.saldo += valor;
-
-    // Registra a transação com data e hora local
-    let dataAtual = new Date().toLocaleString("pt-BR"); 
-    usuario.extrato.push({
-        tipo: "Depósito",
-        valor: valor,
-        data: dataAtual
-    });
-
-    console.log(`\n[SUCESSO] Depósito de R$ ${valor.toFixed(2)} realizado!`);
+function exibirExtrato(conta) {
+  descontarParcelaEmprestimo(conta);
+  console.log("\n=== EXTRATO ===");
+  if (conta.extrato.length === 0) console.log("Sem movimentações.");
+  for (let i = 0; i < conta.extrato.length; i++) {
+    let transacao = conta.extrato[i];
+    let linha = "[" + transacao.data + "] " + transacao.tipo + ": R$ " + transacao.valor.toFixed(2);
+    if (transacao.detalhes) linha += " | " + transacao.detalhes;
+    console.log(linha);
+  }
+  console.log("Saldo: R$ " + conta.saldo.toFixed(2));
+  console.log("=== EMPRÉSTIMOS ===");
+  if (conta.emprestimos.length === 0) console.log("Nenhum empréstimo.");
+  for (let i = 0; i < conta.emprestimos.length; i++) {
+    let emprestimo = conta.emprestimos[i];
+    console.log("Empréstimo " + (i + 1) + " - Solicitado: R$ " + emprestimo.valorSolicitado.toFixed(2) + " | Saldo: R$ " + emprestimo.saldoDevedor.toFixed(2) + " | Restam: " + emprestimo.parcelasRestantes);
+  }
+  Keyboard.question("Enter para voltar...");
 }
 
-// Deduz saldo do usuário logado, após validar se há fundos suficientes
-function sacar(usuario) {
-    console.log("\n--- ÁREA DE SAQUE ---");
-    let valor = Keyboard.questionFloat("Digite o valor que deseja sacar: R$ ");
-
-    if (valor <= 0) {
-        console.log("\n[ERRO] Valor de saque inválido!");
-        return;
+function menuPrincipal(conta) {
+  let sair = false;
+  while (!sair) {
+    console.log("\n=== MENU ===\nCliente: " + conta.nomeCompleto + " | Saldo: R$ " + conta.saldo.toFixed(2));
+    console.log("1.Depositar 2.Sacar 3.Empréstimo 4.Extrato 5.Trocar conta 6.Criar conta 0.Sair");
+    let opcao = Keyboard.question("Escolha: ");
+    switch (opcao) {
+      case "1": depositar(conta); break;
+      case "2": sacar(conta); break;
+      case "3": solicitarEmprestimo(conta); break;
+      case "4": exibirExtrato(conta); break;
+      case "5": console.log("Trocando de conta..."); login(); return;
+      case "6": criarConta(); break;
+      case "0": console.log("Até logo, " + conta.nomeCompleto + "!"); sair = true; break;
+      default: console.log("[ERRO] Opção inválida.");
     }
-
-    if (valor > usuario.saldo) {
-        console.log("\n[ERRO] Saldo insuficiente para essa operação!");
-        return;
-    }
-
-    usuario.saldo -= valor;
-
-    let dataAtual = new Date().toLocaleString("pt-BR");
-    usuario.extrato.push({
-        tipo: "Saque",
-        valor: valor,
-        data: dataAtual
-    });
-
-    console.log(`\n[SUCESSO] Saque de R$ ${valor.toFixed(2)} realizado!`);
+  }
 }
 
-// Lista todo o histórico de depósitos e saques armazenados no array do usuário
-function exibirExtrato(usuario) {
-    console.log("\n===================================");
-    console.log(`         EXTRATO BANCÁRIO          `);
-    console.log("===================================");
-
-    if (usuario.extrato.length === 0) {
-        console.log("Nenhuma movimentação realizada até o momento.");
-    } else {
-        for (let transacao of usuario.extrato) {
-            console.log(`[${transacao.data}] ${transacao.tipo}: R$ ${transacao.valor.toFixed(2)}`);
-        }
-    }
-    console.log("===================================");
-    Keyboard.question("\nPressione Enter para voltar ao menu...");
+function inicio() {
+  if (contas.length === 0) { console.log("Nenhuma conta. Criando a primeira."); criarConta(); return; }
+  if (Keyboard.keyInYN("Criar conta? (N para login)")) criarConta(); else login();
 }
 
-// Mantém o usuário em um loop de opções até que ele decida sair (opção 0)
-function menuPrincipal(usuario) {
-    let logado = true;
-
-    while (logado) {
-        console.log(`\n===================================`);
-        console.log(`   BANCO DIGITAL - MENU PRINCIPAL`);
-        console.log(`   Cliente: ${usuario.nomeCompleto}`);
-        console.log(`   Saldo Atual: R$ ${usuario.saldo.toFixed(2)}`);
-        console.log(`===================================`);
-        console.log("1. Depositar"); 
-        console.log("2. Sacar");
-        console.log("3. Transferência (Pix, TED, DOC)");
-        console.log("4. Empréstimo");
-        console.log("5. Área de Investimentos");
-        console.log("6. Extrato Completo");
-        console.log("7. Recarga de Celular");
-        console.log("0. Sair / Fazer Logout");
-        console.log(`===================================`);
-
-        let opcao = Keyboard.question("Escolha uma opcao: ");
-
-        switch (opcao) {
-            case "1":
-                depositar(usuario);
-                break;
-            case "2":
-                sacar(usuario);
-                break;
-            case "3":
-                console.log("\n[Funcionalidade em construção]: Pix/TED/DOC...");
-                break;
-            case "4":
-                console.log("\n[Funcionalidade em construção]: Empréstimo...");
-                break;
-            case "5":
-                console.log("\n[Funcionalidade em construção]: Investimentos...");
-                break;
-            case "6":
-                exibirExtrato(usuario);
-                break;
-            case "7":
-                console.log("\n[Funcionalidade em construção]: Recarga...");
-                break;
-            case "0":
-                console.log(`\nAté logo, ${usuario.nomeCompleto}!`);
-                logado = false; // Quebra o loop 'while' e encerra o menu
-                break;
-            default:
-                console.log("\n[ERRO] Opção inválida!");
-        }
-    }
-}
-function simularRecarga(operadora, telefone, valor) {
-    // Validação dos dados
-    if (!operadora || !telefone || valor <= 0) {
-        return {
-            sucesso: false,
-            mensagem: "Dados inválidos. Verifique o número e o valor."
-        };
-    }
-     return {
-        sucesso: true,
-        mensagem: "Recarga realizada com sucesso!",
-        comprovante: {
-            idTransacao: Math.floor(Math.random() * 900000) + 100000,
-            data: new Date().toLocaleString('pt-BR'),
-            telefone: telefone,
-            operadora: operadora,
-            valor: `R$ ${valor.toFixed(2)}`
-        }
-    };
-}
-
-// Executando o teste no terminal
-console.log("=== INICIANDO SIMULAÇÃO DE RECARGA ===");
-
-const resultado = simularRecarga("VIVO", "(47) 99999-9999", 30.00);
-
-console.log("\n=== STATUS FINAL ===");
-if (resultado.sucesso) {
-    console.log(resultado.mensagem);
-    console.table(resultado.comprovante); // Mostra o comprovante bonito no terminal
-} else {
-    console.error("Erro:", resultado.mensagem);
-}
-// Inicialização: inicia a primeira chamada do sistema ao executar o arquivo
-conta();
+inicio();
