@@ -1,3 +1,4 @@
+/*
 let saldo = 0
 function ReceberPix(pix){
  saldo =+ pix;
@@ -20,4 +21,31 @@ function roletafalsa(){
   Math.max(configuracaoRoleta[i].premio)
 }
 
-if(cassino(saldo) = true){roletafalsa()}
+let contas = [];
+
+function conta(){
+    const CriarConta = [
+        { nome: Keyboard.question("Digite seu nome:") },
+        { senha: Keyboard.question("Digite sua senha:")  },
+      ];
+      console.log(CriarConta)
+}
+conta()
+*/
+const Keyboard = require("readline-sync");
+function criarSenha(){
+let criar  = Keyboard.questionInt("Crie sua senha: ")
+  senha.push(criar)
+}
+let senha = []
+function senhaDoCelular(){
+  let senhaDigitada = Keyboard.questionInt("Digite sua senha: ")
+  if(senhaDigitada === senha[0] || senhaDigitada === senha[1] ){ 
+    console.log('entrou')
+  } else{
+    console.log('tente novamente')
+  }
+}
+criarSenha()
+senhaDoCelular()
+
